@@ -52,7 +52,7 @@ void SetupJS(JSContextRef contextRef)
   JSValue js_nested_no_reference = js_nester_var;
   
   // Assign a lambda to an object
-  global["add"] = [] (JSContext context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
+  js_global["add"] = [] (JSContext context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
     {
       if(args.size() < 2 || !args[0].IsNumber() || !args[1].IsNumber())
       {
