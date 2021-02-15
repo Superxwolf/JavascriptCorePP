@@ -31,10 +31,10 @@ void SetupJS(JSContextRef contextRef)
   // Get the global object;
   auto js_global = context.GetGlobalObject();
   
-  // Use bracket operator to get any value
+  // Use bracket operator to get any value, returns a reference to the value
   auto js_custom_var = js_global["MyCustomVar"];
   
-  // Allows chaining bracket operator, returns a reference to the value
+  // Allows chaining bracket operator
   auto js_nested_var = js_global["My"]["nested"]["ref_object"];
   
   // Check that js_nested_var is an object
@@ -52,9 +52,18 @@ void SetupJS(JSContextRef contextRef)
   JSValue js_nested_no_reference = js_nester_var;
   
   // Assign a lambda to an object
-  global["MyFunc"] = [] (JSContext context,const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
+  global["add"] = [] (JSContext context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
     {
-      returnValue = context.CreateString("It Works!");
+      if(args.size() < 2 || !args[0].IsNumber() || !args[1].IsNumber())
+      {
+        returnException = context.CreateString("Both parameters must be numeric");
+        return;
+      }
+
+      int val1 = (int)args[0].GetNumber();
+      int val2 = (int)args[1].GetNumber();
+
+      returnValue = context.CreateNumber(val1 + val2);
     };
     
   // Need to do something with JSValueRef that the library doesn't offer? Get the underlying JSValueRef
