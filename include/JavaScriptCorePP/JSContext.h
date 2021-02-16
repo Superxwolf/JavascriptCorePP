@@ -5,6 +5,7 @@
 #include <memory>
 #include <atomic>
 #include <optional>
+#include <tuple>
 
 #include "JSC_Pointers.h"
 
@@ -30,8 +31,7 @@ namespace JavaScriptCorePP
 
 		JSGlobalContextRef _context = NULL;
 
-		JSObject GetGlobalObject();
-		const JSObject GetGlobalObject() const;
+		JSObject GetGlobalObject() const;
 
 		JSValue CreateUndefined() const;
 		JSValue CreateNull() const;
@@ -43,8 +43,10 @@ namespace JavaScriptCorePP
 		JSObject CreateObject() const;
 		JSFunction CreateFunction(const JSCallback& callback) const;
 		JSObject CreateError(const std::string& errorMessage) const;
+		std::tuple<JSObject, JSFunction, JSFunction> CreatePromise() const;
+		
 
-		JSValue FromJSON(const std::string& json_str);
+		JSValue FromJSON(const std::string& json_str) const;
 
 		JSContextRef GetContextRef() const;
 

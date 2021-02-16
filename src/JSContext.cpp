@@ -49,12 +49,7 @@ namespace JavaScriptCorePP
 		}
 	}
 
-	JSObject JSContext::GetGlobalObject()
-	{
-		return JSObject(*this, JSContextGetGlobalObject(_context));
-	}
-
-	const JSObject JSContext::GetGlobalObject() const
+	JSObject JSContext::GetGlobalObject() const
 	{
 		return JSObject(*this, JSContextGetGlobalObject(_context));
 	}
@@ -113,7 +108,17 @@ namespace JavaScriptCorePP
 		return JSObject(*this, JSObjectMakeError(_context, 1, &ref, NULL));
 	}
 
-	JSValue JSContext::FromJSON(const std::string& json_str)
+	std::tuple<JSObject, JSFunction, JSFunction> JSContext::CreatePromise() const
+	{
+		JSObjectRef resolveRef;
+		JSObjectRef rejectRef;
+
+		JSObjectRef promise = JSObjectMakeDeferredPromise(_context, &resolveRef, &rejectRef, NULL);
+
+		return std::make_tuple(JSObject(*this, promise), JSFunction(*this, resolveRef), JSFunction(*this, rejectRef));
+	}
+
+	JSValue JSContext::FromJSON(const std::string& json_str) const
 	{
 		return JSValue(
 					*this,

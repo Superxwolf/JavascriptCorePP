@@ -50,6 +50,17 @@ void SetupJS(JSContextRef contextRef)
   
   // To make sure an object is not a referenced property, cast it to JSValue
   JSValue js_nested_no_reference = js_nester_var;
+
+  auto js_func_val = js_global["Func"];
+
+  if(js_func_val.IsFunction())
+  {
+    auto js_func = js_func_val.GetFunction();
+    js_func();
+
+    //If it accepts parameters, accepts array of JSValue
+    js_func({ context.CreateString("Param1") });
+  }
   
   // Assign a lambda to an object
   js_global["add"] = [] (JSContext context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
@@ -65,7 +76,21 @@ void SetupJS(JSContextRef contextRef)
 
       returnValue = context.CreateNumber(val1 + val2);
     };
-    
+
+
+  js_global["async"] = [] (JSContext context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
+    {
+      auto [ promise, resolve, reject ] = context.CreatePromise();
+
+      returnValue = promise;
+
+
+      // In async context:
+      // Should be scheduled to run on the main thread
+      resolve({ context.CreateString("Works!") });
+
+    };
+      
   // Need to do something with JSValueRef that the library doesn't offer? Get the underlying JSValueRef
   JSValueRef valueRef = *js_global;
 }
