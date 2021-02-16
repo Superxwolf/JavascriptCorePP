@@ -1,5 +1,7 @@
-# JavascriptCore++
-JavascriptCore++ - A simple C++ 17 wrapper for JavaScriptCore
+# JavaScriptCore++
+JavaScriptCore++ - A simple C++ 17 wrapper for JavaScriptCore
+
+Build the static library using cmake
 
 # How to use
 
