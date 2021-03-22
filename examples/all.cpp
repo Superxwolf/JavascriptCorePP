@@ -63,7 +63,7 @@ void SetupJS(JSContextRef contextRef)
   }
   
   // Assign a lambda to an object
-  js_global["add"] = [] (JSContext context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
+  js_global["add"] = [] (const JSContext& context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
     {
       if(args.size() < 2 || !args[0].IsNumber() || !args[1].IsNumber())
       {
@@ -78,16 +78,20 @@ void SetupJS(JSContextRef contextRef)
     };
 
 
-  js_global["async"] = [] (JSContext context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
+  js_global["async"] = [] (const JSContext& context, const std::vector<JSValue> &args, JSValue& returnValue, JSValue& returnException)
     {
-      auto [ promise, resolve, reject ] = context.CreatePromise();
+      auto promise = context.CreatePromise();
 
-      returnValue = promise;
+      returnValue = promise.GetPromise();
 
 
       // In async context:
       // Should be scheduled to run on the main thread
-      resolve({ context.CreateString("Works!") });
+      // Resolve to call success on promise
+      promise.Resolve({ context.CreateString("Works!"); });
+
+      // Reject to call fail
+      promise.Resolve({ context.CreateString("Didn't Work!"); });
 
     };
       
