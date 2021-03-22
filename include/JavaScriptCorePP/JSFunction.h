@@ -1,19 +1,14 @@
 #pragma once
 
 #include <vector>
-#include <memory>
-#include <optional>
 #include "JSContext.h"
-
-#include "JSC_Pointers.h"
 
 namespace JavaScriptCorePP
 {
-	class JSContext;
 	class JSObject;
 	class JSValue;
 
-	typedef std::function<void(JSContext,const std::vector<JSValue>&, JSValue&, JSValue&)> JSCallback;
+	typedef std::function<void(const JSContext&, const std::vector<JSValue>&, JSValue&, JSValue&)> JSCallback;
 
 	class JSFunction
 	{
@@ -39,6 +34,9 @@ namespace JavaScriptCorePP
 		const JSValue ToValue() const;
 
 		bool Valid() const;
+
+		JSFunction& operator=(const JSFunction& other);
+		JSFunction& operator=(JSFunction&& other) noexcept;
 
 	protected:
 		JSObjectRef _value = NULL;

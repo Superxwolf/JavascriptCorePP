@@ -1,10 +1,7 @@
 #pragma once
 #include <string>
 #include "JSType.h"
-#include <memory>
 #include "JSContext.h"
-
-#include "JSC_Pointers.h"
 
 namespace JavaScriptCorePP
 {
@@ -28,6 +25,9 @@ namespace JavaScriptCorePP
 		operator JSStringRef();
 		explicit operator std::string() const;
 		JSStringRef operator*() const;
+
+		JSString& operator=(const JSString& other);
+		JSString& operator=(JSString&& other) noexcept;
 
 	protected:
 

@@ -183,13 +183,41 @@ namespace JavaScriptCorePP
 		return _value != NULL;
 	}
 
+	JSFunction& JSFunction::operator=(const JSFunction& other)
+	{
+		if (_value != NULL)
+		{
+			JSValueUnprotect(_context.GetContextRef(), _value);
+		}
+
+		_context = other._context;
+		_value = other._value;
+
+		if (_value != NULL)
+		{
+			JSValueProtect(_context.GetContextRef(), _value);
+		}
+
+		return *this;
+	}
+	JSFunction& JSFunction::operator=(JSFunction&& other) noexcept
+	{
+		_context = other._context;
+		_value = other._value;
+
+		other._context = NULL;
+		other._value = NULL;
+
+		return *this;
+	}
+
 	JSValueRef JSFunction::StaticCallback(JSContextRef contextRef, JSObjectRef function, JSObjectRef thisObject, size_t arg_count, const JSValueRef* arguments, JSValueRef* exception)
 	{
-		JSCallback* callback = (JSCallback*)JSObjectGetPrivate(function);
+		const JSCallback* callback = (JSCallback*)JSObjectGetPrivate(function);
 		std::vector<JSValue> newArgs;
 		newArgs.reserve(arg_count);
 
-		JSContext context(contextRef);
+		const JSContext context(contextRef);
 		for (size_t i = 0; i < arg_count; i++)
 		{
 			newArgs.emplace_back(context, arguments[i]);

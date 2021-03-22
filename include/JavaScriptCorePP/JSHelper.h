@@ -6,11 +6,10 @@
 #include "JSObject.h"
 #include "JSFunction.h"
 #include "JSString.h"
+#include "JSPromise.h"
 #include <string>
 
 namespace JavaScriptCorePP
 {
-	class JSValue;
-	class JSContext;
-	JSValue JSEval(JSContext context, const std::string& js_eval);
+	JSValue JSEval(const JSContext& context, const std::string& js_eval);
 }

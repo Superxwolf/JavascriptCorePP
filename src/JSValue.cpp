@@ -5,11 +5,10 @@
 #include "JavaScriptCorePP/JSString.h"
 
 #include <JavaScriptCore/JSContextRef.h>
-#include <JavaScriptCore/JSStringRef.h>
 
 namespace JavaScriptCorePP
 {
-	JSValue::JSValue() : _value(NULL), _type(JSType::Undefined), _context(NULL) {}
+	JSValue::JSValue() : _value(NULL), _type(JSType::Invalid), _context(NULL) {}
 
 	JSValue::JSValue(const JSContext& context, JSValueRef value) :
 		_context(context), _value(value)
@@ -30,20 +29,12 @@ namespace JavaScriptCorePP
 		JSValueProtect(_context.GetContextRef(), _value);
 	}
 	
-	JSValue::JSValue(JSValue&& move) noexcept
+	JSValue::JSValue(JSValue&& move) noexcept :
+		_value(move._value), _context(move._context), _type(move._type)
 	{
-		if (_value != NULL)
-		{
-			JSValueUnprotect(_context.GetContextRef(), _value);
-		}
-
-		_value = move._value;
-		_context = move._context;
-		_type = move._type;
-
 		move._value = NULL;
 		move._context = NULL;
-		move._type = JSType::Undefined;
+		move._type = JSType::Invalid;
 	}
 	
 	JSValue::~JSValue()
@@ -115,7 +106,7 @@ namespace JavaScriptCorePP
 
 		other._value = NULL;
 		other._context = NULL;
-		other._type = JSType::Undefined;
+		other._type = JSType::Invalid;
 
 		return *this;
 	}
@@ -189,7 +180,7 @@ namespace JavaScriptCorePP
 
 	bool JSValue::Valid() const
 	{
-		return _value != NULL;
+		return _type != JSType::Invalid;
 	}
 
 	bool JSValue::GetBoolean() const

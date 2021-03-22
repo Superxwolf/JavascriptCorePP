@@ -3,15 +3,9 @@
 #include "JSType.h"
 #include "JSContext.h"
 #include <string>
-#include <memory>
-#include <atomic>
-
-#include "JSC_Pointers.h"
 
 namespace JavaScriptCorePP
 {
-	class JSValue;
-	class JSContext;
 	class JSObject;
 	class JSFunction;
 

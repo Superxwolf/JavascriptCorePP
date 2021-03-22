@@ -3,6 +3,7 @@
 #include "JavaScriptCorePP/JSValue.h"
 #include "JavaScriptCorePP/JSFunction.h"
 #include "JavaScriptCorePP/JSString.h"
+#include "JavaScriptCorePP/JSPromise.h"
 
 #include <JavaScriptCore/JSContextRef.h>
 #include <JavaScriptCore/JSStringRef.h>
@@ -72,7 +73,7 @@ namespace JavaScriptCorePP
 
 	JSString JSContext::CreateString(const std::wstring& str) const
 	{
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
+		static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
 		return CreateString(conversion.to_bytes(str.c_str()));
 	}
 
@@ -108,14 +109,14 @@ namespace JavaScriptCorePP
 		return JSObject(*this, JSObjectMakeError(_context, 1, &ref, NULL));
 	}
 
-	std::tuple<JSObject, JSFunction, JSFunction> JSContext::CreatePromise() const
+	JSPromise JSContext::CreatePromise() const
 	{
 		JSObjectRef resolveRef;
 		JSObjectRef rejectRef;
 
 		JSObjectRef promise = JSObjectMakeDeferredPromise(_context, &resolveRef, &rejectRef, NULL);
 
-		return std::make_tuple(JSObject(*this, promise), JSFunction(*this, resolveRef), JSFunction(*this, rejectRef));
+		return JSPromise(*this, JSObject(*this, promise), JSFunction(*this, resolveRef), JSFunction(*this, rejectRef));
 	}
 
 	JSValue JSContext::FromJSON(const std::string& json_str) const

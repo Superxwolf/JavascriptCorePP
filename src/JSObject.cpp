@@ -162,7 +162,7 @@ namespace JavaScriptCorePP
 	int JSObject::Length() const
 	{
 		// TODO: Find if there's a better way to check for array length
-		JSValue length = GetValue("length");
+		const JSValue length = GetValue("length");
 
 		// If it's an array, it should exist
 		if (length.IsNumber())

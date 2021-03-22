@@ -2,10 +2,6 @@
 #include <string>
 #include <functional>
 #include <vector>
-#include <memory>
-#include <atomic>
-#include <optional>
-#include <tuple>
 
 #include "JSC_Pointers.h"
 
@@ -13,11 +9,12 @@ namespace JavaScriptCorePP
 {
 	class JSContext;
 	class JSValue;
-	typedef std::function<void(JSContext, const std::vector<JSValue>&, JSValue&, JSValue&)> JSCallback;
+	typedef std::function<void(const JSContext&, const std::vector<JSValue>&, JSValue&, JSValue&)> JSCallback;
 
 	class JSObject;
 	class JSFunction;
 	class JSString;
+	class JSPromise;
 
 	class JSContext
 	{
@@ -43,9 +40,8 @@ namespace JavaScriptCorePP
 		JSObject CreateObject() const;
 		JSFunction CreateFunction(const JSCallback& callback) const;
 		JSObject CreateError(const std::string& errorMessage) const;
-		std::tuple<JSObject, JSFunction, JSFunction> CreatePromise() const;
+		JSPromise CreatePromise() const;
 		
-
 		JSValue FromJSON(const std::string& json_str) const;
 
 		JSContextRef GetContextRef() const;

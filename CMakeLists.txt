@@ -15,6 +15,7 @@ ADD_LIBRARY( JavaScriptCorePP STATIC
              src/JSObject.cpp
              src/JSString.cpp
              src/JSValue.cpp
+             src/JSPromise.cpp
            )
 
 target_include_directories(JavaScriptCorePP PRIVATE ${JAVASCRIPTCORE_INCLUDE})

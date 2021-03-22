@@ -15,7 +15,7 @@ namespace JavaScriptCorePP
 
 	JSString::JSString(const JSContext& context, JSStringRef js_str) : _value(js_str), _context(context)
 	{
-		size_t bufSize = JSStringGetMaximumUTF8CStringSize(_value);
+		const size_t bufSize = JSStringGetMaximumUTF8CStringSize(_value);
 		char* buf = new char[bufSize];
 		JSStringGetUTF8CString(_value, buf, bufSize);
 		_str = buf;
@@ -31,7 +31,7 @@ namespace JavaScriptCorePP
 	{
 		move._value = NULL;
 		move._context = NULL;
-		move._str = std::string();
+		std::string().swap(move._str);
 	}
 
 	JSString::~JSString()
@@ -78,5 +78,27 @@ namespace JavaScriptCorePP
 	JSStringRef JSString::operator*() const
 	{
 		return _value;
+	}
+
+	JSString& JSString::operator=(const JSString& other)
+	{
+		_context = other._context;
+		_value = other._value;
+		_str = other._str;
+
+		return *this;
+	}
+
+	JSString& JSString::operator=(JSString&& other) noexcept
+	{
+		_context = other._context;
+		_value = other._value;
+		_str = other._str;
+
+		other._value = NULL;
+		other._context = NULL;
+		std::string().swap(other._str);
+
+		return *this;
 	}
 }
