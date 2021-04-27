@@ -18,7 +18,7 @@ namespace JavaScriptCorePP
 		const size_t bufSize = JSStringGetMaximumUTF8CStringSize(_value);
 		char* buf = new char[bufSize];
 		JSStringGetUTF8CString(_value, buf, bufSize);
-		_str = buf;
+		std::string(buf).swap(_str);
 		delete[] buf;
 	}
 
@@ -100,5 +100,15 @@ namespace JavaScriptCorePP
 		std::string().swap(other._str);
 
 		return *this;
+	}
+
+	bool JSString::operator==(const std::string& rhs)
+	{
+		return _str == rhs;
+	}
+
+	bool JSString::operator==(const JSString& rhs)
+	{
+		return _str == rhs._str;
 	}
 }

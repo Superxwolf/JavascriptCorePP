@@ -38,6 +38,8 @@ namespace JavaScriptCorePP
 		JSFunction& operator=(const JSFunction& other);
 		JSFunction& operator=(JSFunction&& other) noexcept;
 
+		bool operator==(const JSFunction& rhs) const;
+
 	protected:
 		JSObjectRef _value = NULL;
 		JSContext _context = NULL;

@@ -113,7 +113,7 @@ namespace JavaScriptCorePP
 
 	bool JSValue::operator==(const JSValue& other)
 	{
-		return _type == other._type && _context.GetContextRef() == other._context.GetContextRef() && JSValueIsEqual(_context.GetContextRef(), _value, other._value, NULL);
+		return _type == other._type && _context == other._context && JSValueIsEqual(_context.GetContextRef(), _value, other._value, NULL);
 	}
 
 	JSValueRef JSValue::operator*() const

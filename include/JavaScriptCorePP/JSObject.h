@@ -84,6 +84,8 @@ namespace JavaScriptCorePP
 
 		JSValueRef operator*() const;
 
+		bool operator==(const JSObject& rhs) const;
+
 	protected:
 		JSObjectRef _value = NULL;
 		JSContext _context = NULL;

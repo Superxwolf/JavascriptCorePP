@@ -51,6 +51,8 @@ namespace JavaScriptCorePP
 		JSContext& operator=(const JSContext& other);
 		JSContext& operator=(JSContext&& other);
 		JSContextRef operator*() const;
+
+		bool operator==(const JSContext& rhs);
 	};
 }
 

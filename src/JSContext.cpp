@@ -67,8 +67,7 @@ namespace JavaScriptCorePP
 
 	JSString JSContext::CreateString(const std::string& str) const
 	{
-		auto ret = JSString(*this, str);
-		return ret;
+		return JSString(*this, str);
 	}
 
 	JSString JSContext::CreateString(const std::wstring& str) const
@@ -172,5 +171,10 @@ namespace JavaScriptCorePP
 	JSContextRef JSContext::operator*() const
 	{
 		return _context;
+	}
+
+	bool JSContext::operator==(const JSContext& rhs)
+	{
+		return _context == rhs._context;
 	}
 }

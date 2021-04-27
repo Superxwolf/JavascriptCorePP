@@ -236,4 +236,9 @@ namespace JavaScriptCorePP
 	{
 		return _value;
 	}
+
+	bool JSObject::operator ==(const JSObject& rhs) const
+	{
+		return _value == rhs._value;
+	}
 }

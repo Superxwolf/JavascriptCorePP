@@ -200,6 +200,7 @@ namespace JavaScriptCorePP
 
 		return *this;
 	}
+
 	JSFunction& JSFunction::operator=(JSFunction&& other) noexcept
 	{
 		_context = other._context;
@@ -209,6 +210,11 @@ namespace JavaScriptCorePP
 		other._value = NULL;
 
 		return *this;
+	}
+
+	bool JSFunction::operator==(const JSFunction& rhs) const
+	{
+		return _value == rhs._value;
 	}
 
 	JSValueRef JSFunction::StaticCallback(JSContextRef contextRef, JSObjectRef function, JSObjectRef thisObject, size_t arg_count, const JSValueRef* arguments, JSValueRef* exception)

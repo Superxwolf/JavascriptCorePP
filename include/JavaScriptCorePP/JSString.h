@@ -29,6 +29,9 @@ namespace JavaScriptCorePP
 		JSString& operator=(const JSString& other);
 		JSString& operator=(JSString&& other) noexcept;
 
+		bool operator==(const std::string& rhs);
+		bool operator==(const JSString& rhs);
+
 	protected:
 
 		JSContext _context;
