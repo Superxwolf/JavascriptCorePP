@@ -8,9 +8,12 @@
 #include <JavaScriptCore/JSValueRef.h>
 #include <JavaScriptCore/JSStringRef.h>
 
+#include <JavaScriptCorePP/JSSafeExit.h>
+
 #include <stdexcept>
 #include <functional>
 #include <vector>
+#include <cassert>
 
 namespace JavaScriptCorePP
 {
@@ -33,32 +36,16 @@ namespace JavaScriptCorePP
 		JSValueProtect(_context.GetContextRef(), _value);
 	}
 
-	JSFunction::JSFunction(const JSContext& context, JSValueRef value)
+	JSFunction::JSFunction(const JSContext& context, JSValueRef value) : _context(context)
 	{
-		if (JSValueIsObject(context.GetContextRef(), value))
-		{
-			_context = context;
-			this->JSFunction::JSFunction(context, JSValueToObject(context.GetContextRef(), value, NULL));
-		}
-#ifdef INVALID_CAST_THROW
-		else
-			throw std::invalid_argument("Casting a JSValueRef that is not an object to JSFunction");
-#endif
+		assert(JSValueIsObject(context.GetContextRef(), value));
+		this->JSFunction::JSFunction(context, JSValueToObject(context.GetContextRef(), value, NULL));
 	}
 
-	JSFunction::JSFunction(const JSContext& context, JSObjectRef value)
+	JSFunction::JSFunction(const JSContext& context, JSObjectRef value) : _context(context), _value(value)
 	{
-		if (JSObjectIsFunction(context.GetContextRef(), value))
-		{
-			_context = context;
-			_value = value;
-			
-			JSValueProtect(_context.GetContextRef(), _value);
-		}
-#ifdef INVALID_CAST_THROW
-		else
-			throw std::invalid_argument("Casting a JSObjectRef that is not a function to JSFunction");
-#endif
+		assert(JSObjectIsFunction(context.GetContextRef(), value));
+		JSValueProtect(_context.GetContextRef(), _value);
 	}
 
 	JSFunction::JSFunction(const JSFunction& copy) : _value(copy._value), _context(copy._context)
@@ -75,20 +62,23 @@ namespace JavaScriptCorePP
 	JSFunction::JSFunction(const JSValue& value) :
 		_context(value._context)
 	{
-		if (value.IsFunction())
-		{
-			_value = JSValueToObject(_context.GetContextRef(), value._value, NULL);
-			JSValueProtect(_context.GetContextRef(), _value);
-		}
-#ifdef INVALID_CAST_THROW
-		else
-			throw std::invalid_argument("Casting a javascript non-function value to JSFunction");
-#endif
+		assert(value.IsFunction());
+		_value = JSValueToObject(_context.GetContextRef(), value._value, NULL);
+		JSValueProtect(_context.GetContextRef(), _value);
 	}
+
+	JSFunction::JSFunction(const JSObject& value) :
+		_context(value._context)
+	{
+		assert(JSObjectIsFunction(value._context.GetContextRef(), value._value));
+		_value = JSValueToObject(_context.GetContextRef(), value._value, NULL);
+		JSValueProtect(_context.GetContextRef(), _value);
+	}
+
 
 	JSFunction::~JSFunction()
 	{
-		if (_value != NULL)
+		if (_value != NULL && !_js_doSafeExit)
 		{
 			JSValueUnprotect(_context.GetContextRef(), _value);
 		}

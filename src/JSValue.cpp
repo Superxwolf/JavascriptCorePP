@@ -4,7 +4,10 @@
 #include "JavaScriptCorePP/JSContext.h"
 #include "JavaScriptCorePP/JSString.h"
 
+#include <JavaScriptCorePP/JSSafeExit.h>
+
 #include <JavaScriptCore/JSContextRef.h>
+#include <cassert>
 
 namespace JavaScriptCorePP
 {
@@ -39,7 +42,7 @@ namespace JavaScriptCorePP
 	
 	JSValue::~JSValue()
 	{
-		if(_value != NULL)
+		if(_value != NULL && !_js_doSafeExit)
 		{
 			JSValueUnprotect(_context.GetContextRef(), _value);
 		}
@@ -47,14 +50,14 @@ namespace JavaScriptCorePP
 
 	JSFunction JSValue::GetFunction()
 	{
-		if (IsFunction()) return JSFunction(*this);
-		throw std::exception("Invalid cast of JSValue to function");
+		assert(IsFunction());
+		return JSFunction(*this);
 	}
 
 	const JSFunction JSValue::GetFunction() const
 	{
-		if (IsFunction()) return JSFunction(*this);
-		throw std::exception("Invalid cast of JSValue to function");
+		assert(IsFunction());
+		return JSFunction(*this);
 	}
 
 	JSValue JSValue::Create(JSContext context, JSValueRef value)
@@ -64,13 +67,13 @@ namespace JavaScriptCorePP
 
 	IndexedJSValue<std::string> JSValue::operator[](const std::string& key)
 	{
-		if (!IsObject()) throw new std::exception("Trying to access [] operator of a non-object javascript value");
+		assert(IsObject());
 		return GetJSObject()[key];
 	}
 
 	IndexedJSValue<unsigned int> JSValue::operator[](unsigned int key)
 	{
-		if (!IsObject()) throw new std::exception("Trying to access [] operator of a non-object javascript value");
+		assert(IsObject());
 		return GetJSObject()[key];
 	}
 
@@ -123,14 +126,14 @@ namespace JavaScriptCorePP
 
 	JSObject JSValue::GetJSObject()
 	{
-		if (IsObject()) return JSObject(*this);
-		throw std::exception("Invalid cast of JSValue to object");
+		assert(IsObject());
+		return JSObject(*this);
 	}
 
 	const JSObject JSValue::GetJSObject() const
 	{
-		if (IsObject()) return JSObject(*this);
-		throw std::exception("Invalid cast of JSValue to object");
+		assert(IsObject());
+		return JSObject(*this);
 	}
 
 	JSType JSValue::GetJSType() const
@@ -185,28 +188,19 @@ namespace JavaScriptCorePP
 
 	bool JSValue::GetBoolean() const
 	{
-		if (IsBoolean())
-			return JSValueToBoolean(_context.GetContextRef(), _value);
-
-		else
-			throw std::exception("Invalid cast of JSValue to boolean");
+		assert(IsBoolean());
+		return JSValueToBoolean(_context.GetContextRef(), _value);
 	}
 
 	double JSValue::GetNumber() const
 	{
-		if (IsNumber())
-			return JSValueToNumber(_context.GetContextRef(), _value, NULL);
-
-		else
-			throw std::exception("Invalid cast of JSValue to number");
+		assert(IsNumber());
+		return JSValueToNumber(_context.GetContextRef(), _value, NULL);
 	}
 
 	std::string JSValue::GetString() const
 	{
-		if (IsString())
-			return JSString(_context, _value).GetString();
-
-		else
-			throw std::exception("Invalid cast of JSValue to string");
+		assert(IsString());
+		return JSString(_context, _value).GetString();
 	}
 }

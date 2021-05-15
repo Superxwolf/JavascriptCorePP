@@ -19,6 +19,7 @@ namespace JavaScriptCorePP
 		JSFunction(const JSFunction& copy);
 		JSFunction(JSFunction&& move) noexcept;
 		JSFunction(const JSValue& value);
+		JSFunction(const JSObject& value);
 		~JSFunction();
 
 		operator JSValue();

@@ -10,6 +10,8 @@
 #include <JavaScriptCore/JSObjectRef.h>
 #include <JavaScriptCore/JavaScript.h>
 
+#include <JavaScriptCorePP/JSSafeExit.h>
+
 #include <functional>
 #include <vector>
 #include <locale>
@@ -44,7 +46,7 @@ namespace JavaScriptCorePP
 
 	JSContext::~JSContext()
 	{
-		if (_context != NULL)
+		if (_context != NULL && !_js_doSafeExit)
 		{
 			JSGlobalContextRelease(_context);
 		}

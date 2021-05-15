@@ -5,6 +5,8 @@
 #include <JavaScriptCore/JSContextRef.h>
 #include <JavaScriptCore/JSStringRef.h>
 
+#include <JavaScriptCorePP/JSSafeExit.h>
+
 namespace JavaScriptCorePP
 {
 	JSString::JSString(const JSContext& context, const std::string& str) :
@@ -36,7 +38,7 @@ namespace JavaScriptCorePP
 
 	JSString::~JSString()
 	{
-		if(_value != NULL)
+		if(_value != NULL && !_js_doSafeExit)
 			JSStringRelease(_value);
 	}
 

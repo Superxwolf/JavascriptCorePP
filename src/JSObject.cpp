@@ -8,7 +8,10 @@
 #include <JavaScriptCore/JSStringRef.h>
 #include <JavaScriptCore/JSObjectRef.h>
 
+#include <JavaScriptCorePP/JSSafeExit.h>
+
 #include <stdexcept>
+#include <cassert>
 
 namespace JavaScriptCorePP
 {
@@ -24,15 +27,9 @@ namespace JavaScriptCorePP
 	JSObject::JSObject(const JSContext& context, JSValueRef value) :
 		_context(context)
 	{
-		if (JSValueIsObject(context.GetContextRef(), value))
-		{
-			_value = JSValueToObject(context.GetContextRef(), value, NULL);
-			JSValueProtect(_context.GetContextRef(), _value);
-		}
-#ifdef INVALID_CAST_THROW
-		else
-			throw std::invalid_argument("Casting a javascript non-object value to JSObject");
-#endif
+		assert(JSValueIsObject(context.GetContextRef(), value));
+		_value = JSValueToObject(context.GetContextRef(), value, NULL);
+		JSValueProtect(_context.GetContextRef(), _value);
 	}
 
 	JSObject::JSObject(const JSContext& context, JSObjectRef value) :
@@ -41,18 +38,11 @@ namespace JavaScriptCorePP
 		JSValueProtect(_context.GetContextRef(), _value);
 	}
 
-	JSObject::JSObject(const JSValue& value)
+	JSObject::JSObject(const JSValue& value) : _context(value._context)
 	{
-		if (value.IsObject())
-		{
-			_context = value._context;
-			_value = JSValueToObject(_context.GetContextRef(), value._value, NULL);
-			JSValueProtect(_context.GetContextRef(), _value);
-		}
-#ifdef INVALID_CAST_THROW
-		else
-			throw std::invalid_argument("Casting a javascript non-object value to JSObject");
-#endif
+		assert(value.IsObject());
+		_value = JSValueToObject(_context.GetContextRef(), value._value, NULL);
+		JSValueProtect(_context.GetContextRef(), _value);
 	}
 
 	JSObject::JSObject(const JSObject& copy) : _value(copy._value), _context(copy._context)
@@ -68,7 +58,7 @@ namespace JavaScriptCorePP
 
 	JSObject::~JSObject()
 	{
-		if (_value != NULL)
+		if (_value != NULL && !_js_doSafeExit)
 		{
 			JSValueUnprotect(_context.GetContextRef(), _value);
 		}
@@ -165,12 +155,7 @@ namespace JavaScriptCorePP
 		const JSValue length = GetValue("length");
 
 		// If it's an array, it should exist
-		if (length.IsNumber())
-		{
-			return (int)length.GetNumber();
-		}
-
-		return 0;
+		return length.IsNumber() ? (int)length.GetNumber() : 0;
 	}
 
 	bool JSObject::Valid() const
