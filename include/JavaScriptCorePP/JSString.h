@@ -16,6 +16,7 @@ namespace JavaScriptCorePP
 		~JSString();
 
 		std::string GetString() const;
+		std::wstring GetWString() const;
 		JSStringRef GetJSC() const;
 		JSValue ToJSValue() const;
 

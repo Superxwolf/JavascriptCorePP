@@ -7,6 +7,8 @@
 
 #include <JavaScriptCorePP/JSSafeExit.h>
 
+#include <codecvt>
+
 namespace JavaScriptCorePP
 {
 	JSString::JSString(const JSContext& context, const std::string& str) :
@@ -45,6 +47,12 @@ namespace JavaScriptCorePP
 	std::string JSString::GetString() const
 	{
 		return _str;
+	}
+
+	std::wstring JSString::GetWString() const
+	{
+		static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
+		return conversion.from_bytes(_str);
 	}
 
 	JSStringRef JSString::GetJSC() const

@@ -203,4 +203,10 @@ namespace JavaScriptCorePP
 		assert(IsString());
 		return JSString(_context, _value).GetString();
 	}
+
+	std::wstring JSValue::GetWString() const
+	{
+		assert(IsString());
+		return JSString(_context, _value).GetWString();
+	}
 }

@@ -36,6 +36,7 @@ namespace JavaScriptCorePP
 		bool GetBoolean() const;
 		double GetNumber() const;
 		std::string GetString() const;
+		std::wstring GetWString() const;
 
 		JSObject GetJSObject();
 		const JSObject GetJSObject() const;
