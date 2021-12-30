@@ -17,6 +17,9 @@
 
 namespace JavaScriptCorePP
 {
+	JSFunction::JSFunction() :
+		_value(NULL), _context(NULL) {}
+
 	JSFunction::JSFunction(const JSContext& context, const JSCallback& callback)
 		: _context(context)
 	{

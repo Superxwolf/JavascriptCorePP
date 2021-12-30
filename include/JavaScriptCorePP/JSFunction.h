@@ -13,6 +13,7 @@ namespace JavaScriptCorePP
 	class JSFunction
 	{
 	public:
+		JSFunction();
 		JSFunction(const JSContext& context, const JSCallback& callback);
 		JSFunction(const JSContext& context, JSValueRef value);
 		JSFunction(const JSContext& context, JSObjectRef value);
