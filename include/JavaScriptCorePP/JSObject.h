@@ -11,29 +11,7 @@
 namespace JavaScriptCorePP
 {
 	template<typename T>
-	class IndexedJSValue : public JSValue
-	{
-	public:
-		JSValue& operator=(const JSValue& other);
-		JSValue& operator=(JSValue&& other);
-
-		IndexedJSValue& operator=(const JSFunction& func);
-		IndexedJSValue& operator=(const JSObject& val);
-		IndexedJSValue& operator=(const JSString& str);
-		IndexedJSValue& operator=(const JSCallback& func);
-
-		operator JSValue();
-
-	private:
-		IndexedJSValue(const JSObject& obj, const T& index);
-		IndexedJSValue(const IndexedJSValue& other);
-		IndexedJSValue(IndexedJSValue&& other);
-
-		JSObject obj;
-		T index;
-
-		friend JSObject;
-	};
+	class IndexedJSValue;
 
 	class JSObject
 	{
@@ -94,6 +72,31 @@ namespace JavaScriptCorePP
 
 		template<typename T>
 		friend class IndexedJSValue;
+	};
+
+	template<typename T>
+	class IndexedJSValue : public JSValue
+	{
+	public:
+		JSValue& operator=(const JSValue& other);
+		JSValue& operator=(JSValue&& other);
+
+		IndexedJSValue& operator=(const JSFunction& func);
+		IndexedJSValue& operator=(const JSObject& val);
+		IndexedJSValue& operator=(const JSString& str);
+		IndexedJSValue& operator=(const JSCallback& func);
+
+		operator JSValue();
+
+	private:
+		IndexedJSValue(const JSObject& obj, const T& index);
+		IndexedJSValue(const IndexedJSValue& other);
+		IndexedJSValue(IndexedJSValue&& other);
+
+		JSObject obj;
+		T index;
+
+		friend JSObject;
 	};
 
 	template<typename T>

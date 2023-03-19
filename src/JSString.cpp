@@ -8,6 +8,7 @@
 #include <JavaScriptCorePP/JSSafeExit.h>
 
 #include <codecvt>
+#include <locale>
 
 namespace JavaScriptCorePP
 {
